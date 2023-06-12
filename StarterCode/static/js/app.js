@@ -11,7 +11,7 @@ function init() {
   // Use D3 to select the dropdown menu
   let dropdownMenu = d3.select("#selDataset");
 
-  // Use D3 to get sample names and populate the drop-down selector
+  // Use D3 to get sample names and populate the dropdown
   d3.json(url).then((data) => {
       
       // Set a variable for the sample names
@@ -20,18 +20,16 @@ function init() {
       // Add  samples to dropdown menu
       names.forEach((id) => {
 
-          // Log the value of id for each iteration of the loop
+          // Log the value of id 
           console.log(id);
 
-          dropdownMenu.append("option")
-          .text(id)
-          .property("value",id);
+          dropdownMenu.append("option").text(id).property("value",id);
       });
 
       // Set the first sample from the list
-      let sample_one = names[0];
+      let newD = names[0];
 
-      // Log the value of new
+      // Log the value 
       console.log(newD);
 
       // Build the initial plots
@@ -48,13 +46,13 @@ function createBar(bar) {
   // Use D3 to retrieve all of the data
   d3.json(url).then((data) => {
 
-      // Retrieve all sample data
+      // Retrieve sample data
       let sampleInfo = data.samples;
 
       // Filter based on the value of the sample
       let value = sampleInfo.filter(result => result.id == bar);
 
-      // Get the first index from the array
+      // Get the first index
       let valueData = value[0];
 
       // Get the otu_ids, lables, and sample values
@@ -62,15 +60,15 @@ function createBar(bar) {
       let otu_labels = valueData.otu_labels;
       let sample_values = valueData.sample_values;
 
-      // Log the data to the console
+      // Log the data
       console.log(otu_ids,otu_labels,sample_values);
 
-      // Set top ten items to display in descending order
+      // Set items to display in descending order
       let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
       let xticks = sample_values.slice(0,10).reverse();
       let labels = otu_labels.slice(0,10).reverse();
       
-      // Set up the trace for the bar chart
+      // Set up for the bar chart
       let trace = {
           x: xticks,
           y: yticks,
@@ -90,13 +88,13 @@ function createScatter(bubble) {
   // Use D3 to retrieve all of the data
   d3.json(url).then((data) => {
       
-      // Retrieve all sample data
+      // Retrieve sample data
       let sampleInfo = data.samples;
 
       // Filter based on the value of the sample
       let value = sampleInfo.filter(result => result.id == bubble);
 
-      // Get the first index from the array
+      // Get the first index 
       let valueData = value[0];
 
       // Get the otu_ids, lables, and sample values
@@ -104,10 +102,10 @@ function createScatter(bubble) {
       let otu_labels = valueData.otu_labels;
       let sample_values = valueData.sample_values;
 
-      // Log the data to the console
+      // Log the data 
       console.log(otu_ids,otu_labels,sample_values);
       
-      // Set up the trace for bubble chart
+      // Set up for bubble chart
       let trace1 = {
           x: otu_ids,
           y: sample_values,
@@ -135,25 +133,25 @@ function createSummary(summary) {
   // Use D3 to retrieve all of the data
   d3.json(url).then((data) => {
 
-      // Retrieve all metadata
+      // Retrieve metadata
       let metadata = data.metadata;
 
       // Filter based on the value of the sample
       let value = metadata.filter(result => result.id == summary);
 
-      // Log the array of metadata objects after the have been filtered
+      // Log the array of metadata 
       console.log(value)
 
-      // Get the first index from the array
+      // Get the first index 
       let valueData = value[0];
 
-      // Clear out metadata
+      // Clear metadata
       d3.select("#sample-metadata").html("");
 
-      // Use Object.entries to add each key/value pair to the panel
+      // Add each key/value pair to the panel
       Object.entries(valueData).forEach(([key,value]) => {
 
-          // Log the individual key/value pairs as they are being appended to the metadata panel
+          // Log pairs as they are being appended 
           console.log(key,value);
 
           d3.select("#sample-metadata").append("h5").text(`${key}: ${value}`);
