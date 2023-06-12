@@ -31,27 +31,57 @@ function init() {
       // Set the first sample from the list
       let sample_one = names[0];
 
-      // Log the value of sample_one
-      console.log(940);
+      // Log the value of new
+      console.log(newD);
 
       // Build the initial plots
-      createScatter('940')
-      createBar('940')
-      createSummary('940')
+      createScatter(newD);
+      createBar(newD);
+      createSummary(newD);
 
   });
 };
 
-// Function that updates dashboard when sample is changed
-function optionChanged(newID) { 
+// Function that creates bar chart
+function createBar(bar) {
 
-  // Log the new value
-  console.log(newID); 
+  // Use D3 to retrieve all of the data
+  d3.json(url).then((data) => {
 
-  // Call all functions 
-  createScatter(newID)
-  createBar(newID)
-  createSummary(newID)
+      // Retrieve all sample data
+      let sampleInfo = data.samples;
+
+      // Filter based on the value of the sample
+      let value = sampleInfo.filter(result => result.id == bar);
+
+      // Get the first index from the array
+      let valueData = value[0];
+
+      // Get the otu_ids, lables, and sample values
+      let otu_ids = valueData.otu_ids;
+      let otu_labels = valueData.otu_labels;
+      let sample_values = valueData.sample_values;
+
+      // Log the data to the console
+      console.log(otu_ids,otu_labels,sample_values);
+
+      // Set top ten items to display in descending order
+      let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
+      let xticks = sample_values.slice(0,10).reverse();
+      let labels = otu_labels.slice(0,10).reverse();
+      
+      // Set up the trace for the bar chart
+      let trace = {
+          x: xticks,
+          y: yticks,
+          text: labels,
+          type: "bar",
+          orientation: "h"
+      };
+
+      // Plot bar chart
+      Plotly.newPlot("bar", [trace])
+  });
 };
 
 // Function that creates scatter plot as bubble chart
@@ -99,48 +129,6 @@ function createScatter(bubble) {
     });
 };
 
-// Function that creates bar chart
-function createBar(bar) {
-
-  // Use D3 to retrieve all of the data
-  d3.json(url).then((data) => {
-
-      // Retrieve all sample data
-      let sampleInfo = data.samples;
-
-      // Filter based on the value of the sample
-      let value = sampleInfo.filter(result => result.id == bar);
-
-      // Get the first index from the array
-      let valueData = value[0];
-
-      // Get the otu_ids, lables, and sample values
-      let otu_ids = valueData.otu_ids;
-      let otu_labels = valueData.otu_labels;
-      let sample_values = valueData.sample_values;
-
-      // Log the data to the console
-      console.log(otu_ids,otu_labels,sample_values);
-
-      // Set top ten items to display in descending order
-      let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
-      let xticks = sample_values.slice(0,10).reverse();
-      let labels = otu_labels.slice(0,10).reverse();
-      
-      // Set up the trace for the bar chart
-      let trace = {
-          x: xticks,
-          y: yticks,
-          text: labels,
-          type: "bar",
-          orientation: "h"
-      };
-
-      // Plot bar chart
-      Plotly.newPlot("bar", [trace])
-  });
-};
-
 // Function that gets summary info
 function createSummary(summary) {
 
@@ -172,6 +160,18 @@ function createSummary(summary) {
       });
   });
 
+};
+
+// Function that updates dashboard when sample is changed
+function optionChanged(newID) { 
+
+  // Log the new value
+  console.log(newID); 
+
+  // Call all functions 
+  createScatter(newID)
+  createBar(newID)
+  createSummary(newID)
 };
 
 // Call the initialize function
